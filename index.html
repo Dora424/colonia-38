@@ -197,7 +197,6 @@
           allowfullscreen="true" 
           webkitallowfullscreen="true" 
           mozallowfullscreen="true"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
           loading="lazy">
         </iframe>
       </div>
@@ -379,7 +378,7 @@
 };
     const DEFAULT_PROJECTS = DEFAULT_DATA.projects;
 
-    const STORAGE_KEY = "museo_scratch_colonia38_v2";
+    const STORAGE_KEY = "museo_scratch_colonia38_v3";
 
     let museumState = {
       title: DEFAULT_DATA.title,
@@ -544,39 +543,24 @@
       });
     }
 
-    function cleanScratchId(input) {
-      if (!input) return "10128407";
-      // Si el usuario pega la URL completa (ej: https://scratch.mit.edu/projects/123456789/)
-      const match = input.toString().match(/projects\/(\d+)/);
-      if (match && match[1]) {
-        return match[1];
-      }
-      // O si solo introduce los números
-      const digitsOnly = input.toString().replace(/\D/g, '');
-      return digitsOnly || "10128407";
-    }
-
-    function openScratchModal(proj) {
+    
+function openScratchModal(proj) {
       const modal = document.getElementById('scratchModal');
-      const sId = cleanScratchId(proj.scratchId);
+      const localHtmlFile = proj.scratchId || "la_gata.html";
       
       document.getElementById('modalTitle').innerText = proj.title;
       document.getElementById('modalAuthor').innerText = `Creado por: ${proj.author}`;
-      document.getElementById('modalDescription').innerText = proj.description || "Diviértete explorando este proyecto programado en Scratch.";
+      document.getElementById('modalDescription').innerText = proj.description || "Diviértete explorando este proyecto.";
       document.getElementById('modalIcon').innerText = proj.icon || "🎮";
 
-      // Enlaces externo e Iframe de Scratch
-      const externalUrl = `https://scratch.mit.edu/projects/${sId}/`;
-      const embedUrl = `https://scratch.mit.edu/projects/${sId}/embed`;
-
-      document.getElementById('modalExternalLink').href = externalUrl;
+      document.getElementById('modalExternalLink').href = localHtmlFile;
 
       // Cargar iframe con feedback de carga
       const loader = document.getElementById('iframeLoader');
       const iframe = document.getElementById('scratchIframe');
       loader.classList.remove('hidden');
 
-      iframe.src = embedUrl;
+      iframe.src = localHtmlFile;
       iframe.onload = () => {
         loader.classList.add('hidden');
       };
