@@ -386,35 +386,19 @@
       projects: []
     };
 
-    async function loadState() {
+ function loadState() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
           museumState = JSON.parse(stored);
         } else {
-          // El TXT contiene JSON válido y debe estar junto al HTML.
-          try {
-            const response = await fetch("./json colonia 38.txt", { cache: "no-store" });
-            if (!response.ok) throw new Error(`No se pudo leer el JSON (${response.status})`);
-            const jsonText = await response.text();
-            const importedData = JSON.parse(jsonText);
-            museumState = {
-              title: importedData.title || DEFAULT_DATA.title,
-              subtitle: importedData.subtitle || "",
-              projects: Array.isArray(importedData.projects) ? importedData.projects : [...DEFAULT_PROJECTS]
-            };
-          } catch (fetchError) {
-            // Respaldo para apertura local directa o si el TXT no está disponible.
-            console.warn("No se pudo cargar el TXT externo; se usan los datos incorporados.", fetchError);
-            museumState = {
-              title: DEFAULT_DATA.title,
-              subtitle: DEFAULT_DATA.subtitle,
-              projects: [...DEFAULT_PROJECTS]
-            };
-          }
+          museumState = {
+            title: DEFAULT_DATA.title,
+            subtitle: DEFAULT_DATA.subtitle,
+            projects: [...DEFAULT_PROJECTS]
+          };
         }
       } catch (e) {
-        console.error("Error al cargar los datos; usando el JSON incorporado.", e);
         museumState = {
           title: DEFAULT_DATA.title,
           subtitle: DEFAULT_DATA.subtitle,
